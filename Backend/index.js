@@ -12,7 +12,10 @@ const PORT = process.env.PORT || 8000;
 
 connectdb();
 
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // Removed the trailing slash
+    credentials: true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 

@@ -1,8 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate} from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Signup = () => {
 
+  const navigate= useNavigate();
   const [formdata, setFormdata] = useState({
     fullname:"",
     username:"",
@@ -16,20 +19,27 @@ const Signup = () => {
       ...formdata,
       [name]: value,
     });
-
   }
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("userdata",formdata);
+const onSignup=async(e)=>{
+  e.preventDefault();
+  let newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/users/signup`;
+  const response= await axios.post(newUrl,formdata);
+  if(response.data.success){
+    console.log("User registered");
+    toast.success("User registered successfully");
+    navigate("/")
   }
-
+  else{
+    toast.error(response.data.message);
+  }
+}
 
   return (
     <>
-      <div className="flex flex-col items-center justify-center min-h-screen bg-purple-300">
+      <div className="flex flex-col items-center justify-center min-h-screen">
         <div>
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={onSignup} className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
             <div className="flex flex-col items-center justify-center">
               <div className="card-body gap-2">
               <label className="label">
