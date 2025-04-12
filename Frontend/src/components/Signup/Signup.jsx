@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Signup = () => {
 
   const [formdata, setFormdata] = useState({
-    name:"",
+    fullname:"",
     username:"",
     email:"",
     password:"",
@@ -37,10 +37,10 @@ const Signup = () => {
                 </label>
                 <input
                   type="text"
-                  name="name"
+                  name="fullname"
                   placeholder="Enter your fullname"
                   className="input"
-                  value={formdata.name}
+                  value={formdata.fullname}
                   onChange={handleChange}
                   
                 />
