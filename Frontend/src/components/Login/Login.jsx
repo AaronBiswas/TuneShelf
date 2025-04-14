@@ -1,9 +1,14 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { AuthContext } from "../../Context/AuthContext.jsx";
 
 const Login = () => {
+
+  const{login} = useContext(AuthContext);
+
+
   const navigate = useNavigate();
   const [logindata, setLogindata] = useState({
     username: "",
@@ -22,6 +27,7 @@ const Login = () => {
     if (response.data.success) {
       console.log("User loggedin");
       toast.success(`Welcome ${logindata.username}`);
+      login(response.data.token);
       navigate("/");
     } else {
       toast.error(response.data.message);

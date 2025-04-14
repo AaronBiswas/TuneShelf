@@ -1,13 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import {AuthContext} from "../../Context/AuthContext.jsx";
+import Cookies from "js-cookie";
 
 const Navbar = () => {
 
+  const{authenticated,login,logout}= useContext(AuthContext);
+
+
   const navigate = useNavigate();
+
+  const handleLogout =()=>{
+    logout();
+  }
 
   const handleClick =(()=>{
     navigate("/")
   })
+
+  console.log("Auth State:",authenticated);
 
 
   return (
@@ -42,9 +53,11 @@ const Navbar = () => {
             <div className="hidden flex-none lg:block">
               <ul className="menu menu-horizontal">
                 {/* Navbar menu content here */}
-                <li>
-                  <a href="/signup" >Sign up</a>
-                </li>
+                {!authenticated ?( <li>
+                  <a href="/login">Login</a>
+                </li>): (<li>
+                  <a onClick={handleLogout} >Logout</a>
+                </li>)}
                 <li>
                   <a href="/playlists" >Your Playlists</a>
                 </li>
