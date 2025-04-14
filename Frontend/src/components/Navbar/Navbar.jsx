@@ -1,25 +1,24 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import {AuthContext} from "../../Context/AuthContext.jsx";
-import Cookies from "js-cookie";
+import { AuthContext } from "../../Context/AuthContext.jsx";
 
 const Navbar = () => {
-
-  const{authenticated,login,logout}= useContext(AuthContext);
-
-
+  const { authenticated, logout } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const handleLogout =()=>{
+  const handleLogout = () => {
     logout();
+    navigate("/login");  // Redirect to login page after logout
   }
 
-  const handleClick =(()=>{
+  const handleClick = () => {
     navigate("/")
-  })
+  }
 
-  console.log("Auth State:",authenticated);
-
+  // For debugging
+  useEffect(() => {
+    console.log("Auth State in Navbar:", authenticated);
+  }, [authenticated]);
 
   return (
     <>
@@ -49,26 +48,29 @@ const Navbar = () => {
                 </svg>
               </label>
             </div>
-            <div className="mx-2 flex-1 px-2" onClick={handleClick}  >TuneShelf</div>
+            <div className="mx-2 flex-1 px-2" onClick={handleClick}>TuneShelf</div>
             <div className="hidden flex-none lg:block">
               <ul className="menu menu-horizontal">
                 {/* Navbar menu content here */}
-                {!authenticated ?( <li>
-                  <a href="/login">Login</a>
-                </li>): (<li>
-                  <a onClick={handleLogout} >Logout</a>
-                </li>)}
+                {!authenticated ? (
+                  <li>
+                    <a href="/login">Login</a>
+                  </li>
+                ) : (
+                  <li>
+                    <a onClick={handleLogout}>Logout</a>
+                  </li>
+                )}
                 <li>
-                  <a href="/playlists" >Your Playlists</a>
+                  <a href="/playlists">Your Playlists</a>
                 </li>
                 <li>
-                  <a href="/shared" >Shared Playlists</a>
+                  <a href="/shared">Shared Playlists</a>
                 </li>
               </ul>
             </div>
           </div>
           {/* Page content here */}
-          Content
         </div>
         <div className="drawer-side">
           <label

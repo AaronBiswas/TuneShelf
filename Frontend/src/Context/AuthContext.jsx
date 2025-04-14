@@ -1,28 +1,44 @@
 import React, { createContext, useEffect, useState } from 'react'
 import Cookies from "js-cookie";
 
-// Rename this to avoid naming conflict
 export const AuthContext = createContext();
 
-// Rename the component to avoid conflict with the context
 const AuthProvider = ({children}) => {
-  const[authenticated,setAuthenticated]=useState(false);
-  useEffect(()=>{
-    const Token= Cookies.get("jwt");
-    setAuthenticated(!!Token)
-  },[])
+  const[authenticated, setAuthenticated] = useState(false);
+  
+  useEffect(() => {
+    // Check both cookie and localStorage for the token
+    const cookieToken = Cookies.get("jwt");
+    const localToken = localStorage.getItem("jwt");
+    
+    // If either token exists, set authenticated to true
+    if (cookieToken || localToken) {
+      setAuthenticated(true);
+      
+      // If token exists in localStorage but not in cookie, set it in cookie
+      if (localToken && !cookieToken) {
+        Cookies.set("jwt", localToken, { path: "/", sameSite: "none", secure: true });
+      }
+    } else {
+      setAuthenticated(false);
+    }
+  }, []);
 
-  const login =(Token)=>{
+  const login = (Token) => {
+    // Store in both cookie and localStorage
     Cookies.set("jwt", Token, { path: "/", sameSite: "none", secure: true });
+    localStorage.setItem("jwt", Token);
     setAuthenticated(true);
   }
 
   const logout = () => {
+    // Clear from both cookie and localStorage
     Cookies.remove("jwt", { path: "/", sameSite: "none", secure: true });
+    localStorage.removeItem("jwt");
     setAuthenticated(false);
   };
 
-  return <AuthContext.Provider value={{authenticated,login,logout}}>
+  return <AuthContext.Provider value={{authenticated, login, logout}}>
     {children}
   </AuthContext.Provider>
 }

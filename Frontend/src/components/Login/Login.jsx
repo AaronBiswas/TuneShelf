@@ -5,10 +5,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../Context/AuthContext.jsx";
 
 const Login = () => {
-
-  const{login} = useContext(AuthContext);
-
-
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [logindata, setLogindata] = useState({
     username: "",
@@ -22,15 +19,29 @@ const Login = () => {
 
   const onlogin = async (e) => {
     e.preventDefault();
-    let newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/users/login`;
-    const response = await axios.post(newUrl, logindata);
-    if (response.data.success) {
-      console.log("User loggedin");
-      toast.success(`Welcome ${logindata.username}`);
-      login(response.data.token);
-      navigate("/");
-    } else {
-      toast.error(response.data.message);
+    try {
+      let newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/users/login`;
+      const response = await axios.post(newUrl, logindata, {
+        withCredentials: true,
+      });
+      
+      if (response.data.success) {
+        console.log("User logged in");
+        toast.success(`Welcome ${logindata.username}`);
+        
+        // Store the token in localStorage as well for persistence
+        localStorage.setItem('jwt', response.data.token);
+        
+        // Call the login function from context
+        login(response.data.token);
+        
+        navigate("/");
+      } else {
+        toast.error(response.data.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.error || "An error occurred during login");
     }
   };
 
@@ -38,7 +49,10 @@ const Login = () => {
     <>
       <div className="flex flex-col items-center justify-center min-h-screen bg-purple-300">
         <div>
-          <form onSubmit={onlogin} className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box">
+          <form
+            onSubmit={onlogin}
+            className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box"
+          >
             <div className="card-body gap-2">
               <label className="label">
                 <span className="label-text">Username</span>{" "}
