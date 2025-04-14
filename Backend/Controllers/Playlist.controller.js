@@ -22,25 +22,93 @@ export const createPlaylist = async (req, res) => {
   }
 };
 
+export const AddSongs = async (req, res) => {
+  const { songname, artistname, songlink } = req.body;
 
-export const AddSongs = async(req,res)=>{
+  const { playlistId } = req.params;
 
-    const {songname,artistname,songlink}= req.body;
-    
-    if(!songname|| !artistname){
-        return res.status(400).json({message:"Please enter the required song details"})
+  if (!songname || !artistname) {
+    return res
+      .status(400)
+      .json({ message: "Please enter the required song details" });
+  }
+
+  try {
+    const playlist = await Playlist.findById(playlistId);
+
+    if (!playlist) {
+      return res.status(401).json({ message: "Playlist not found" });
     }
 
-    try {
+    const newSong = {
+      songname: songname,
+      artistname: artistname,
+      songlink: songlink,
+    };
 
-        const playlist = await Playlist.findById()
+    playlist.songs.push(newSong);
 
+    const updatedPlaylist = await playlist.save();
 
+    return res.status(201).json(updatedPlaylist);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
 
-        const newSong = {
+export const RemoveSongs = async (req, res) => {
+  const { playlistId } = req.params;
 
-        }
-    } catch (error) {
-        
+  const { songname, artistname, songlink } = req.body;
+
+  if (!songname && !artistname) {
+    return res.status(404).json({ message: "Song doesn't exist" });
+  }
+
+  try {
+    const playlist = await Playlist.findById(playlistId);
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist doesn't exist" });
     }
-}
+
+    if (playlist.songs.length === 0) {
+      return res.status(400).json({ message: "Playlist is empty" });
+    }
+
+    const updatedSongs = playlist.songs.filter(
+      (song) => !(song.songname == songname && song.artistname == artistname)
+    );
+
+    if (updatedSongs.length === playlist.songs.length) {
+      return res
+        .status(404)
+        .json({ message: "Song not found in the playlist" });
+    }
+
+    playlist.songs = updatedSongs;
+
+    const updatedPlaylist = await playlist.save();
+
+    return res.status(201).json(updatedPlaylist);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Error in deleting song" });
+  }
+};
+
+export const deletePlaylist = async (req, res) => {
+  const { playlistId } = req.params;
+
+  try {
+    const playlist = await Playlist.findByIdAndDelete(playlistId);
+    console.log("Playlist deleted successfully");
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist doesn't exist" });
+    }
+    return res.status(204).json({ message: "Playlist deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
