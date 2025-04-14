@@ -9,10 +9,12 @@ const userSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
+    unique:true,
   },
   email: {
     type: String,
     required: true,
+    unique:true,
   },
 
   password: {
@@ -20,6 +22,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 6,
   },
+
+  playlists:[{
+    type:mongoose.Schema.Types.ObjectId,
+    ref:"Playlists",
+  }]
 },{timestamps: true});
 
 
