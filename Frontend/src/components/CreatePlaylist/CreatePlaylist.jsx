@@ -19,9 +19,10 @@ const CreatePlaylist = () => {
     e.preventDefault();
     try {
       let newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/playlist/create`;
-      const response = await axios.post(newUrl, title, { withCredentials: true });
-      
-      // The backend returns the saved playlist directly, not a success property
+      const response = await axios.post(newUrl, title, {
+        withCredentials: true,
+      });
+
       if (response.status === 201) {
         console.log("Playlist Created:", response.data);
         toast.success("Playlist created successfully");
@@ -31,7 +32,10 @@ const CreatePlaylist = () => {
       }
     } catch (error) {
       console.error("Error creating playlist:", error);
-      toast.error(error.response?.data?.message || "An error occurred while creating the playlist");
+      toast.error(
+        error.response?.data?.message ||
+          "An error occurred while creating the playlist"
+      );
     }
   };
 
@@ -40,13 +44,20 @@ const CreatePlaylist = () => {
       <div className="flex flex-col items-center justify-center min-h-screen">
         <form
           onSubmit={onCreate}
-          className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box"
+          className="fieldset w-xs bg-base-200 border border-base-300 p-4 rounded-box relative"
         >
           <div className="flex flex-col items-center justify-center">
             <div className="card-body gap-2">
-              <label className="label">
-                <span className="label-text">Title</span>{" "}
-              </label>
+              <div className="flex justify-between w-full">
+                <span className="label-text">Title</span>
+                <button 
+                  type="button" 
+                  className="btn btn-sm btn-circle" 
+                  onClick={() => navigate("/playlists")}
+                >
+                  ✕
+                </button>
+              </div>
               <input
                 type="text"
                 name="title"

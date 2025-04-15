@@ -8,13 +8,15 @@ import Sharedplaylist from "../Playlists/Sharedplaylist.jsx";
 import { ToastContainer } from "react-toastify";
 import CreatePlaylist from "../CreatePlaylist/CreatePlaylist.jsx";
 import ViewPlaylist from "../ViewPlaylist/ViewPlaylist.jsx";
+import Mainpage from "../MainPage/Mainpage.jsx";
 
 const Home = () => {
   return (
     <>
     <ToastContainer />
+    <Navbar />
     <Routes>
-      <Route path="/" element={<Navbar />} />
+      <Route path="/" element={<Mainpage />} />
       <Route path="/signup" element={<Signup />} />
       <Route path="/login" element={<Login />} />
       <Route path="/playlists" element={<Playlists />} />
