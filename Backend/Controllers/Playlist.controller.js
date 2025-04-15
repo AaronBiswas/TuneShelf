@@ -112,3 +112,28 @@ export const deletePlaylist = async (req, res) => {
     return res.status(500).json({ message: "Internal Server Error" });
   }
 };
+
+export const getPlaylist = async (req, res) => {
+  const user= req.user;
+  const userId = user._id;
+  console.log(userId);
+  try {
+    const playlist = await Playlist.find({createdBy: userId });
+    console.log(playlist);
+
+    if (!playlist || playlist.length === 0) {
+      return res.status(404).json({ message: "No Playlists available" });
+    }
+
+    const playlistData = playlist.map(playlists=>({
+      title:playlists.title,
+      songs:playlists.songs,
+    }))
+
+    return res.status(200).json({playlists:playlistData});
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};

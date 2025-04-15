@@ -7,6 +7,7 @@ import Playlists from "../Playlists/Playlists.jsx";
 import Sharedplaylist from "../Playlists/Sharedplaylist.jsx";
 import { ToastContainer } from "react-toastify";
 import CreatePlaylist from "../CreatePlaylist/CreatePlaylist.jsx";
+import ViewPlaylist from "../ViewPlaylist/ViewPlaylist.jsx";
 
 const Home = () => {
   return (
@@ -18,6 +19,7 @@ const Home = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/playlists" element={<Playlists />} />
       <Route path="/playlists/create" element={<CreatePlaylist />} />
+      <Route path="/playlists/view" element={<ViewPlaylist />} />
       <Route path="/shared" element={<Sharedplaylist />} />
     </Routes>
     </>

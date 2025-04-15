@@ -40,13 +40,13 @@ const Playlists = () => {
                 />
               </figure>
               <div className="card-body">
-                <h2 className="card-title">Join/share a playlist</h2>
+                <h2 className="card-title">View your playlists</h2>
                 <p>
                   A card component has a figure, a body part, and inside body
                   there are title and actions parts
                 </p>
                 <div className="card-actions justify-center">
-                  <button className="btn btn-primary">Join/Share a playlist</button>
+                  <button className="btn btn-primary" onClick={()=>navigate("/playlists/view")}>View your playlists</button>
                 </div>
               </div>
             </div>
