@@ -15,6 +15,7 @@ const Auth = async (req, res, next) => {
             return res.status(401).json({error:"User not found, please login again"});
         }
         req.user = user;
+        console.log(user);
         next();
 
 

@@ -115,11 +115,9 @@ export const deletePlaylist = async (req, res) => {
 
 export const getPlaylist = async (req, res) => {
   const user= req.user;
-  const userId = user._id;
-  console.log(userId);
+  console.log(user);
   try {
-    const playlist = await Playlist.find({createdBy: userId });
-    console.log(playlist);
+    const playlist = await Playlist.find({createdBy: user._id });
 
     if (!playlist || playlist.length === 0) {
       return res.status(404).json({ message: "No Playlists available" });

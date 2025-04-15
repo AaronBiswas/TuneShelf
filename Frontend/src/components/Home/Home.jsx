@@ -9,21 +9,23 @@ import { ToastContainer } from "react-toastify";
 import CreatePlaylist from "../CreatePlaylist/CreatePlaylist.jsx";
 import ViewPlaylist from "../ViewPlaylist/ViewPlaylist.jsx";
 import Mainpage from "../MainPage/Mainpage.jsx";
+import GetProfile from "../GetProfile/GetProfile.jsx";
 
 const Home = () => {
   return (
     <>
-    <ToastContainer />
-    <Navbar />
-    <Routes>
-      <Route path="/" element={<Mainpage />} />
-      <Route path="/signup" element={<Signup />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/playlists" element={<Playlists />} />
-      <Route path="/playlists/create" element={<CreatePlaylist />} />
-      <Route path="/playlists/view" element={<ViewPlaylist />} />
-      <Route path="/shared" element={<Sharedplaylist />} />
-    </Routes>
+      <ToastContainer />
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Mainpage />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/profile" element={<GetProfile />} />
+        <Route path="/playlists" element={<Playlists />} />
+        <Route path="/playlists/create" element={<CreatePlaylist />} />
+        <Route path="/playlists/view" element={<ViewPlaylist />} />
+        <Route path="/shared" element={<Sharedplaylist />} />
+      </Routes>
     </>
   );
 };

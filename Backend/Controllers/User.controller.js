@@ -76,7 +76,7 @@ export const registerUser = async (req, res) => {
 
 export const getProfile = async (req, res) => {
   try {
-    res.status(200).json({
+   return res.status(200).json({
       success: true,
       message: "Profile fetched successfully",
       user: req.user,

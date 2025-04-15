@@ -8,12 +8,12 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    navigate("/login");  // Redirect to login page after logout
-  }
+    navigate("/login"); // Redirect to login page after logout
+  };
 
   const handleClick = () => {
-    navigate("/")
-  }
+    navigate("/");
+  };
 
   // For debugging
   useEffect(() => {
@@ -48,7 +48,9 @@ const Navbar = () => {
                 </svg>
               </label>
             </div>
-            <div className="mx-2 flex-1 px-2" onClick={handleClick}>TuneShelf</div>
+            <div className="mx-2 flex-1 px-2" onClick={handleClick}>
+              TuneShelf
+            </div>
             <div className="hidden flex-none lg:block">
               <ul className="menu menu-horizontal">
                 {/* Navbar menu content here */}
@@ -61,12 +63,21 @@ const Navbar = () => {
                     <a onClick={handleLogout}>Logout</a>
                   </li>
                 )}
-                <li>
-                  <a href="/playlists">Your Playlists</a>
-                </li>
-                <li>
-                  <a href="/shared">Shared Playlists</a>
-                </li>
+                {authenticated && (
+                  <li>
+                    <a href="/profile">Profile</a>
+                  </li>
+                )}
+                {authenticated && (
+                  <li>
+                    <a href="/playlists">Your Playlists</a>
+                  </li>
+                )}
+                {authenticated && (
+                  <li>
+                    <a href="/shared">Shared Playlists</a>
+                  </li>
+                )}
               </ul>
             </div>
           </div>
