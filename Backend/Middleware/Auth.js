@@ -15,7 +15,7 @@ const Auth = async (req, res, next) => {
             return res.status(401).json({error:"User not found, please login again"});
         }
         req.user = user;
-        console.log(user);
+        // Removing the console.log statement that's exposing user data
         next();
 
 

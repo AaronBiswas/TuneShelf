@@ -115,7 +115,6 @@ export const deletePlaylist = async (req, res) => {
 
 export const getPlaylist = async (req, res) => {
   const user= req.user;
-  console.log(user);
   try {
     const playlist = await Playlist.find({createdBy: user._id });
 
@@ -124,8 +123,9 @@ export const getPlaylist = async (req, res) => {
     }
 
     const playlistData = playlist.map(playlists=>({
-      title:playlists.title,
-      songs:playlists.songs,
+      _id: playlists._id,  // Include the _id field
+      title: playlists.title,
+      songs: playlists.songs,
     }))
 
     return res.status(200).json({playlists:playlistData});
