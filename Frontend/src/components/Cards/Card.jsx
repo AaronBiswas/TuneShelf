@@ -68,6 +68,31 @@ const Card = ({ item,refresh }) => {
     }
   }
 
+const onDeletePlaylist=async(e)=>{
+  e.preventDefault();
+  try {
+    if (!item || !item._id) {
+      toast.error("Invalid playlist ID");
+      return;
+    }
+
+    let newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/playlist/${item._id}/delete`;
+    const response = await axios.post(newUrl, {}, {
+      withCredentials: true,
+    });
+
+    if (response.status===200) {
+      toast.success(response.data.message || "Playlist Deleted successfully");
+      refresh();
+    } else {
+      toast.error(response.data.message || "Failed to Delete the Playlist");
+    }
+  } catch (error) {
+    console.log(error);
+    toast.error("Cannot remove Playlist");
+  }
+}
+
   return (
     <div className="card bg-base-100 shadow-xl mb-4">
       <div className="card-body">
@@ -99,6 +124,12 @@ const Card = ({ item,refresh }) => {
             onClick={() => setonOpen(!onOpen)}
           >
             Manage Songs
+          </button>
+          <button type="button"
+            className="btn btn-soft btn-warning"
+            onClick={onDeletePlaylist}
+          >
+            Delete Playlist
           </button>
           {onOpen && (
             <div className="mt-4 w-full">

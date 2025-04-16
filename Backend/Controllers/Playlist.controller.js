@@ -106,7 +106,7 @@ export const deletePlaylist = async (req, res) => {
     if (!playlist) {
       return res.status(404).json({ message: "Playlist doesn't exist" });
     }
-    return res.status(204).json({ message: "Playlist deleted successfully" });
+    return res.status(200).json({ message: "Playlist deleted successfully" });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });

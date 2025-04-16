@@ -22,7 +22,7 @@ const PlaylistSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      unique: true,
+      // Remove the unique: true constraint
     },
 
     songs: [SongSchema],
@@ -31,6 +31,9 @@ const PlaylistSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// If you want to enforce uniqueness per user, add a compound index
+PlaylistSchema.index({ title: 1, createdBy: 1 }, { unique: true });
 
 const Playlist = mongoose.model("Playlist", PlaylistSchema);
 
