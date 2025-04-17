@@ -66,3 +66,19 @@ export const shareNew = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 };
+
+export const getSharedPlaylist = async (req, res) => {
+  const sharedByUserId = req.user._id;
+  try {
+    const sharedPlaylists = await Share.find({ SharedBy: sharedByUserId });
+
+    if (!sharedPlaylists) {
+      return res.status(404).json({ message: "No shared playlists found" });
+    }
+
+    return res.status(200).json({ sharedPlaylists });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}

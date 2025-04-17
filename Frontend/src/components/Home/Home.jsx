@@ -10,6 +10,7 @@ import CreatePlaylist from "../CreatePlaylist/CreatePlaylist.jsx";
 import ViewPlaylist from "../ViewPlaylist/ViewPlaylist.jsx";
 import Mainpage from "../MainPage/Mainpage.jsx";
 import GetProfile from "../GetProfile/GetProfile.jsx";
+import ShareOptions from "../ShareOptions/ShareOptions.jsx";
 
 const Home = () => {
   return (
@@ -25,6 +26,7 @@ const Home = () => {
         <Route path="/playlists/create" element={<CreatePlaylist />} />
         <Route path="/playlists/view" element={<ViewPlaylist />} />
         <Route path="/shared" element={<Sharedplaylist />} />
+        <Route path="/shareoptions" element={<ShareOptions />} />
       </Routes>
     </>
   );
