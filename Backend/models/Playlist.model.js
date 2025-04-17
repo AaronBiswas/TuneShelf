@@ -22,7 +22,6 @@ const PlaylistSchema = new mongoose.Schema(
     title: {
       type: String,
       required: true,
-      // Remove the unique: true constraint
     },
 
     songs: [SongSchema],

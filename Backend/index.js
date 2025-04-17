@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import userRoutes from './Routes/User.route.js';
 import playlistRoutes from "./Routes/Playlist.route.js"
+import ShareRoutes from "./Routes/Share.route.js";
 import connectdb from './db/connectdb.js';
 import Auth from './Middleware/Auth.js';
 
@@ -24,6 +25,8 @@ app.use(cookieParser());
 // Use the user routes only once
 app.use("/tuneshelf/users", userRoutes);
 app.use("/tuneshelf/playlist",Auth,playlistRoutes);
+app.use("/tuneshelf/share",Auth,ShareRoutes);
+
 
 app.get('/', (req, res) => {
     res.send('Hello from the backend!');
