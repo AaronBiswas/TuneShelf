@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get("/:playlistId/sharePlaylist",Auth,shareExist);
 router.get("/sharePlaylist/getSharedPlaylist",Auth,getSharedPlaylist);
-router.post("/:playlistId/sharePlaylist/New",Auth,shareNew);
+router.post("/sharePlaylist/New",Auth,shareNew);
 
 
 

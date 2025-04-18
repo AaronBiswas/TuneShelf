@@ -32,6 +32,7 @@ const ShareOptions = () => {
                 <div className="card-actions mt-4">
                   <button
                     className="btn btn-primary"
+                    onClick={() => navigate("/shareoptions/new")}
                     >
                     Share a new playlist
                   </button>

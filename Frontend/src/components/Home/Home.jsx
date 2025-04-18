@@ -11,6 +11,7 @@ import ViewPlaylist from "../ViewPlaylist/ViewPlaylist.jsx";
 import Mainpage from "../MainPage/Mainpage.jsx";
 import GetProfile from "../GetProfile/GetProfile.jsx";
 import ShareOptions from "../ShareOptions/ShareOptions.jsx";
+import ShareNewPlaylist from "../ShareOptions/ShareNewPlaylist.jsx";
 
 const Home = () => {
   return (
@@ -27,6 +28,7 @@ const Home = () => {
         <Route path="/playlists/view" element={<ViewPlaylist />} />
         <Route path="/shared" element={<Sharedplaylist />} />
         <Route path="/shareoptions" element={<ShareOptions />} />
+        <Route path="/shareoptions/new" element={<ShareNewPlaylist />} />
       </Routes>
     </>
   );
