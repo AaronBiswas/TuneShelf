@@ -8,7 +8,7 @@ const generateLink = (id) => {
 
     console.log("Token generated successfully", ShareToken);
 
-    const generatedLink = `${process.env.VITE_API_URL}share/${ShareToken}`;
+    const generatedLink = `${process.env.VITE_API_URL}share?token=${ShareToken}`;
 
     return generatedLink;
   } catch (error) {
