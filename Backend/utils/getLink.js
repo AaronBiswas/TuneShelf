@@ -17,7 +17,7 @@ export const getLink = async (id, req, res) => {
       throw new Error("No shared playlists found!");
     }
     
-    return playlists;
+    return {playlists,sharedByUserId};
   } catch (error) {
     console.log(error.message);
     if (res) {

@@ -18,16 +18,15 @@ const ShareNewPlaylist = () => {
       };
     
       // Function to copy link to clipboard
-      const onLinkShare = () => {
+      const onLinkShare = async () => {
         if (generatedLink) {
-          navigator.clipboard.writeText(generatedLink)
-            .then(() => {
-              toast.success("Link copied to clipboard!");
-            })
-            .catch((err) => {
-              console.error("Failed to copy link: ", err);
-              toast.error("Failed to copy link to clipboard");
-            });
+          try {
+        await navigator.clipboard.writeText(generatedLink);
+        toast.success("Link copied to clipboard!");
+          } catch (err) {
+        console.error("Failed to copy link: ", err);
+        toast.error("Failed to copy link to clipboard");
+          }
         } else {
           toast.error("No link available to copy");
         }
@@ -100,7 +99,7 @@ const ShareNewPlaylist = () => {
                       type="text" 
                       value={generatedLink} 
                       readOnly 
-                      className="input input-bordered flex-1" 
+                      className="input input-bordered flex-1 cursor-text" 
                     />
                     <button 
                       type="button" 

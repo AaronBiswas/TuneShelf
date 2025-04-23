@@ -99,7 +99,7 @@ export const joinLink = async (req, res) => {
     // Extract the token parameter from req.params
     const { token } = req.params;
 
-    const playlists = await getLink(token);
+    const {playlists,sharedByUserId} = await getLink(token);
     
     if (!playlists || playlists.length === 0) {
       return res.status(404).json({ message: "No shared playlists found" });
