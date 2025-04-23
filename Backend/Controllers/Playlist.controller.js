@@ -101,11 +101,23 @@ export const deletePlaylist = async (req, res) => {
   const { playlistId } = req.params;
 
   try {
+    // First, delete the playlist
     const playlist = await Playlist.findByIdAndDelete(playlistId);
-    console.log("Playlist deleted successfully");
     if (!playlist) {
       return res.status(404).json({ message: "Playlist doesn't exist" });
     }
+    
+    // Also delete any shared entries for this playlist
+    try {
+      // Import Share model if not already imported
+      const Share = (await import("../models/Share.model.js")).default;
+      await Share.deleteMany({ playlistId: playlistId });
+      console.log("Related shared playlists also deleted");
+    } catch (shareError) {
+      console.log("Error deleting shared playlists:", shareError);
+      // Continue execution even if there's an error with shared playlists
+    }
+    
     return res.status(200).json({ message: "Playlist deleted successfully" });
   } catch (error) {
     console.log(error);
@@ -130,6 +142,24 @@ export const getPlaylist = async (req, res) => {
 
     return res.status(200).json({playlists:playlistData});
 
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+export const getSinglePlaylist = async (req, res) => {
+  const { playlistId } = req.params;
+
+  try {
+    const playlist = await Playlist.findById(playlistId);
+
+    if (!playlist) {
+      return res.status(404).json({ message: "Playlist not found" });
+    }
+
+    return res.status(200).json({ playlist });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });

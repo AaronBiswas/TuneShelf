@@ -16,11 +16,31 @@ const Playlists = () => {
     setter([]);
     try {
       const response = await axios.get(url, { withCredentials: true });
-      // Removing the setTimeout delay
+      // Set the playlists data, ensuring we handle both regular and shared playlists
       setter(response.data.playlists || response.data.sharedPlaylists || []);
     } catch (error) {
       console.log(error);
       toast.error(errorMessage);
+    }
+  };
+  
+  // Function to refresh all playlists data
+  const refreshAllPlaylists = () => {
+    if (activeTab === "view" || activeTab === "shared") {
+      // Refresh the current tab's playlists
+      if (activeTab === "view") {
+        fetchPlaylists(
+          `${import.meta.env.VITE_API_URL}tuneshelf/playlist/view`,
+          setMyPlaylists,
+          "Error getting your playlists"
+        );
+      } else {
+        fetchPlaylists(
+          `${import.meta.env.VITE_API_URL}tuneshelf/share/sharePlaylist/getSharedPlaylist`,
+          setSharedPlaylists,
+          "Error getting shared playlists"
+        );
+      }
     }
   };
 
@@ -121,11 +141,7 @@ const Playlists = () => {
               <div className="">
                 {myPlaylists.map((item, index) => (
                   <div key={item._id || index} className="w-full">
-                    <Card item={item} refresh={() => fetchPlaylists(
-                      `${import.meta.env.VITE_API_URL}tuneshelf/playlist/view`,
-                      setMyPlaylists,
-                      "Error getting your playlists"
-                    )} />
+                    <Card item={item} refresh={refreshAllPlaylists} />
                   </div>
                 ))}
               </div>
@@ -153,11 +169,7 @@ const Playlists = () => {
               <div className="">
                 {sharedPlaylists.map((item, index) => (
                   <div key={item._id || index} className="w-full">
-                    <Card item={{...item, isShared: true}} refresh={() => fetchPlaylists(
-                      `${import.meta.env.VITE_API_URL}tuneshelf/share/sharePlaylist/getSharedPlaylist`,
-                      setSharedPlaylists,
-                      "Error getting shared playlists"
-                    )} />
+                    <Card item={{...item, isShared: true}} refresh={refreshAllPlaylists} />
                   </div>
                 ))}
               </div>

@@ -80,13 +80,30 @@ export const shareNew = async (req, res) => {
 export const getSharedPlaylist = async (req, res) => {
   const sharedByUserId = req.user._id;
   try {
+    // Get all shared playlists created by this user
     const sharedPlaylists = await Share.find({ SharedBy: sharedByUserId });
 
-    if (!sharedPlaylists) {
+    if (!sharedPlaylists || sharedPlaylists.length === 0) {
       return res.status(404).json({ message: "No shared playlists found" });
     }
 
-    return res.status(200).json({ sharedPlaylists });
+    // Filter out shared playlists whose referenced playlist no longer exists
+    const validSharedPlaylists = [];
+    
+    for (const sharedPlaylist of sharedPlaylists) {
+      // Check if the referenced playlist still exists
+      const playlistExists = await Playlist.findById(sharedPlaylist.playlistId);
+      
+      if (playlistExists) {
+        validSharedPlaylists.push(sharedPlaylist);
+      } else {
+        // If the playlist doesn't exist, delete the share entry
+        await Share.findByIdAndDelete(sharedPlaylist._id);
+        console.log(`Removed orphaned share entry for deleted playlist: ${sharedPlaylist._id}`);
+      }
+    }
+
+    return res.status(200).json({ sharedPlaylists: validSharedPlaylists });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal server error" });
@@ -108,6 +125,14 @@ export const joinLink = async (req, res) => {
     // Get the first playlist from the returned array
     const playlist = playlists[0];
     
+    // Verify that the referenced playlist still exists
+    const playlistExists = await Playlist.findById(playlist.playlistId);
+    if (!playlistExists) {
+      // If the playlist doesn't exist, delete the share entry
+      await Share.findByIdAndDelete(playlist._id);
+      return res.status(404).json({ message: "The shared playlist no longer exists" });
+    }
+    
     // Update the SharedWith field
     playlist.SharedWith = req.user._id;
     playlist.isAccepted = true;
@@ -115,16 +140,28 @@ export const joinLink = async (req, res) => {
     // Save the updated playlist
     const savedShare = await playlist.save();
 
-    const getPlaylistsfromLink = await Share.find({ SharedBy: sharedByUserId });
+    // Get valid shared playlists (filter out those with deleted playlists)
+    const allSharedPlaylists = await Share.find({ SharedBy: sharedByUserId });
+    const validSharedPlaylists = [];
+    
+    for (const sharedPlaylist of allSharedPlaylists) {
+      const playlistStillExists = await Playlist.findById(sharedPlaylist.playlistId);
+      if (playlistStillExists) {
+        validSharedPlaylists.push(sharedPlaylist);
+      } else {
+        // Clean up orphaned share entries
+        await Share.findByIdAndDelete(sharedPlaylist._id);
+      }
+    }
 
-    if (!getPlaylistsfromLink) {
-      return res.status(404).json({ message: "No shared playlists found" });
+    if (validSharedPlaylists.length === 0) {
+      return res.status(404).json({ message: "No valid shared playlists found" });
     }
 
     return res.status(200).json({
       message: "Playlist joined successfully!",
       SavedShare: savedShare,
-      sharedPlaylists: getPlaylistsfromLink,
+      sharedPlaylists: validSharedPlaylists,
     });
   } catch (error) {
     console.log(error);

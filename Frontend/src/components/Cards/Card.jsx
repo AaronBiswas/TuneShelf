@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const Card = ({ item, refresh }) => {
@@ -8,6 +9,8 @@ const Card = ({ item, refresh }) => {
     artistname: "",
     songlink: "",
   });
+
+  const navigate =useNavigate();
 
   const [onOpen, setonOpen] = useState(false);
 
@@ -78,9 +81,23 @@ const Card = ({ item, refresh }) => {
         return;
       }
 
-      let newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/playlist/${
-        item._id
-      }/delete`;
+      // For shared playlists, we need to delete the original playlist
+      // The backend will automatically delete the shared entries
+      let newUrl;
+      if (item.isShared) {
+        // For shared playlists, we need to use the playlistId field which references the original playlist
+        // If playlistId is available, use it; otherwise fall back to _id
+        const playlistIdToDelete = item.playlistId || item._id;
+        newUrl = `${
+          import.meta.env.VITE_API_URL
+        }tuneshelf/playlist/${playlistIdToDelete}/delete`;
+      } else {
+        // Regular playlist deletion
+        newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/playlist/${
+          item._id
+        }/delete`;
+      }
+
       const response = await axios.post(
         newUrl,
         {},
@@ -91,7 +108,10 @@ const Card = ({ item, refresh }) => {
 
       if (response.status === 200) {
         toast.success(response.data.message || "Playlist Deleted successfully");
-        refresh();
+        // Ensure refresh is called to update both regular and shared playlists
+        if (typeof refresh === "function") {
+          refresh();
+        }
       } else {
         toast.error(response.data.message || "Failed to Delete the Playlist");
       }
@@ -100,6 +120,10 @@ const Card = ({ item, refresh }) => {
       toast.error("Cannot remove Playlist");
     }
   };
+
+  const ViewSongs = async (e) => {
+
+  }
 
   const onShareExistingPlaylist = async (e) => {
     e.preventDefault();
@@ -112,7 +136,7 @@ const Card = ({ item, refresh }) => {
       let newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/share/${
         item._id
       }/sharePlaylist`;
-      const response = await axios.get(newUrl,{ withCredentials: true });
+      const response = await axios.get(newUrl, { withCredentials: true });
 
       if (response.status === 201) {
         toast.success(response.data.message || "Playlist shared successfully");
@@ -124,7 +148,7 @@ const Card = ({ item, refresh }) => {
       console.log(error);
       toast.error("Cannot share Playlist");
     }
-  }
+  };
 
   return (
     <div className="card bg-base-100 shadow-xl mb-4">
@@ -135,22 +159,6 @@ const Card = ({ item, refresh }) => {
             <p className="text-sm opacity-70 mt-1">
               {item.songs?.length || 0} songs in playlist
             </p>
-          </div>
-          <div className="md:w-2/3">
-            {item.songs && item.songs.length > 0 ? (
-              <ul className="list-disc pl-5">
-                {item.songs.map((song, index) => (
-                  <li key={index} className="mb-2">
-                    <span className="font-medium">{song.songname}</span>
-                    <p className="text-sm opacity-70">{song.artistname}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="text-center opacity-70">
-                No songs in this playlist.
-              </div>
-            )}
           </div>
           <button
             type="button"
@@ -166,9 +174,23 @@ const Card = ({ item, refresh }) => {
           >
             Delete Playlist
           </button>
-          <button className="btn btn-soft btn-info"
-          onClick={onShareExistingPlaylist}
-          >Share Playlist</button>
+          <button
+            className="btn btn-soft btn-info"
+            onClick={onShareExistingPlaylist}
+          >
+            Share Playlist
+          </button>
+
+          <button className="btn btn-soft btn-accent"
+          onClick={() => {
+            if (item && item._id) {
+              navigate(`/playlist/${item._id}`);
+            } else {
+              toast.error("Invalid playlist ID");
+            }
+          }}
+          >View Songs</button>
+
           {onOpen && (
             <div className="mt-4 w-full">
               <div className="collapse bg-base-100 border-base-300 border rounded-lg">

@@ -13,6 +13,7 @@ import GetProfile from "../GetProfile/GetProfile.jsx";
 import ShareOptions from "../ShareOptions/ShareOptions.jsx";
 import ShareNewPlaylist from "../ShareOptions/ShareNewPlaylist.jsx";
 import JoinPlaylist from "../JoinPlaylist/JoinPlaylist.jsx";
+import PlaylistSongs from "../Playlists/PlaylistSongs.jsx";
 
 const Home = () => {
   return (
@@ -31,6 +32,7 @@ const Home = () => {
         <Route path="/shareoptions" element={<ShareOptions />} />
         <Route path="/shareoptions/new" element={<ShareNewPlaylist />} />
         <Route path="/shared/joined" element={<JoinPlaylist />} />
+        <Route path="/playlist/:playlistId" element={<PlaylistSongs />} />
       </Routes>
     </>
   );
