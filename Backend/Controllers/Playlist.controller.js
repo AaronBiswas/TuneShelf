@@ -159,7 +159,7 @@ export const getSinglePlaylist = async (req, res) => {
       return res.status(404).json({ message: "Playlist not found" });
     }
 
-    return res.status(200).json({ playlist });
+    return res.status(200).json({playlist:playlist});
   } catch (error) {
     console.log(error);
     return res.status(500).json({ message: "Internal Server Error" });

@@ -11,8 +11,9 @@ router.post("/:playlistId/add",AddSongs);
 router.post("/:playlistId/remove",RemoveSongs);
 router.post("/:playlistId/delete",deletePlaylist);
 
-router.get('/playlist/:playlistId', getSinglePlaylist);
 router.get("/view",getPlaylist);
+router.get('/:playlistId', getSinglePlaylist);
+
 
 
 export default router;
