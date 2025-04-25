@@ -168,3 +168,26 @@ export const joinLink = async (req, res) => {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+
+
+export const deleteSharedPlaylist = async (req, res) => {
+  const { playlistId } = req.params;
+  const sharedByUserId = req.user._id;
+  
+  try {
+    // Find the shared playlist by ID and delete it
+    const deletedShare = await Share.findOneAndDelete({
+      _id: playlistId,
+      SharedBy: sharedByUserId,
+    });
+
+    if (!deletedShare) {
+      return res.status(404).json({ message: "Shared playlist not found" });
+    }
+
+    return res.status(200).json({ message: "Shared playlist deleted successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}

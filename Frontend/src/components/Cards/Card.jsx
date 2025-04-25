@@ -80,46 +80,35 @@ const Card = ({ item, refresh }) => {
         toast.error("Invalid playlist ID");
         return;
       }
-
-      // For shared playlists, we need to delete the original playlist
-      // The backend will automatically delete the shared entries
-      let newUrl;
+  
+      let response;
+  
       if (item.isShared) {
-        // For shared playlists, we need to use the playlistId field which references the original playlist
-        // If playlistId is available, use it; otherwise fall back to _id
-        const playlistIdToDelete = item.playlistId || item._id;
-        newUrl = `${
-          import.meta.env.VITE_API_URL
-        }tuneshelf/playlist/${playlistIdToDelete}/delete`;
+        // DELETE the shared playlist reference only
+        const newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/shared/${item._id}`;
+        response = await axios.delete(newUrl, { withCredentials: true });
       } else {
-        // Regular playlist deletion
-        newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/playlist/${
-          item._id
-        }/delete`;
+        // Delete the actual/original playlist
+        const playlistIdToDelete = item.playlistId || item._id;
+        const newUrl = `${import.meta.env.VITE_API_URL}tuneshelf/playlist/${playlistIdToDelete}/delete`;
+        response = await axios.post(newUrl, {}, { withCredentials: true });
       }
-
-      const response = await axios.post(
-        newUrl,
-        {},
-        {
-          withCredentials: true,
-        }
-      );
-
+  
       if (response.status === 200) {
         toast.success(response.data.message || "Playlist Deleted successfully");
-        // Ensure refresh is called to update both regular and shared playlists
         if (typeof refresh === "function") {
           refresh();
         }
       } else {
         toast.error(response.data.message || "Failed to Delete the Playlist");
       }
+  
     } catch (error) {
       console.log(error);
       toast.error("Cannot remove Playlist");
     }
   };
+  
 
   const ViewSongs = async () => {
     if (item && item._id) {
